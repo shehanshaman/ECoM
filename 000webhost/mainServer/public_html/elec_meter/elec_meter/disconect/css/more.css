@@ -1,0 +1,37 @@
+body{
+	background-image: url("../pic/power.gif");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 38%;
+}
+
+.heading{
+	opacity: 0.6;
+    filter: alpha(opacity=50); /* For IE8 and earlier */
+    text-transform: uppercase;
+}
+
+.heading h3{
+	color: red;
+	font-weight: bold;
+	text-align: center;
+}
+
+.names{
+	margin-top: 1%;
+	background-color: #4d9e87;
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.show{
+	margin-top: 1%;
+	padding-top: 1%;
+	background-color: #cee2e1;
+	padding-bottom: 2%;
+}
+.basic{
+	margin-top: 14%;
+	padding: 1%;
+	background-color: white;
+}

@@ -1,0 +1,1 @@
+<input type="button" class="selBut" name="" style="width: 250px; height: 250px; margin-right: 50px;" value="Client Payment" onclick="location.href='Admin_search/admin_search.php'">

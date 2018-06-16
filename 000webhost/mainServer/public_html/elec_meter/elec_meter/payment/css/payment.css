@@ -1,0 +1,38 @@
+#wrapper {
+	margin-top: 5%;
+	height: 420px;
+	right: 10%;
+	/*margin: -210px 0 0 -270px;*/
+	position: absolute;
+	/*top: 50%;*/
+	width: 40%;
+}
+
+#piechart{
+	margin-top: 5%;
+	margin-left: 5%;
+}
+
+.details{
+	margin-left: 5%;
+	width: 40%;
+}
+
+.show{
+	text-align: center;
+	font-weight: bold;
+}
+
+#revenue{
+	margin-top: 5%;
+	height: 420px;
+	right: 30%;
+	/*margin: -210px 0 0 -270px;*/
+	position: absolute;
+	/*top: 50%;*/
+	width: 40%;
+}
+
+.note{
+	padding-top: 15%;
+}
