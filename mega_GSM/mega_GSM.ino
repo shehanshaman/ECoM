@@ -8,6 +8,10 @@
 
 time_t myTime,nextTime;
 
+
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+
 //current sensor 
 const int sensorIn = 0;
 int mVperAmp = 100; // use 100 for 20A Module and 66 for 30A Module and 185 for 5A
@@ -122,6 +126,11 @@ void setServerAndTime(String result){
 }
 
 void sendUnit(char * id , char * pwd , char * preData , char * newData){
+
+   lcd.clear();
+   lcd.setCursor(3, 0); //setCursur(col,row)
+   lcd.print("Sending Unit");
+  
   //char one[60] = getServerName();
   char two[] = "&password=";
   char three[] = "&time=";
@@ -210,7 +219,23 @@ void sendUnit(char * id , char * pwd , char * preData , char * newData){
 
   char * url = combinr_url;
 
-  while( !myData(url));
+  int x =0;
+  lcd.clear();
+  lcd.setCursor(1, 0); //setCursur(col,row)
+  lcd.print("Sending Units");
+  lcd.setCursor(0, 1); //setCursur(col,row)
+
+  while( !myData(url)){
+    lcd.print(".");
+    x++;
+    if(x>15){
+      lcd.clear();
+      lcd.setCursor(3, 0); //setCursur(col,row)
+      lcd.print("Sending Cordinates");
+      lcd.setCursor(0, 1); //setCursur(col,row)
+      x = 0;
+    }
+  }
  
   Serial.println("DATA : --------------------------");
   Serial.println(result);
@@ -218,6 +243,10 @@ void sendUnit(char * id , char * pwd , char * preData , char * newData){
   if(resultCompare(result,"ok")) {
     Serial.println("Unit sussesfully uploaded");
   }
+
+   lcd.clear();
+   lcd.setCursor(0, 0); //setCursur(col,row)
+   lcd.print("Sending Completed");
   
 }
 
@@ -337,11 +366,6 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 //rom 
 int addr = 0;
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-const int rs = 33, en = 31, d4 = 36, d5 = 34, d6 = 32, d7 = 30;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-
 String inString = "";    // string to hold input id
 String inStringP = ""; //string to hold password
 int val = 0;
@@ -425,10 +449,21 @@ String getPasswordFromKeyboard(){
 
 
 void install(){
-  lcd.begin(16, 2);
+  
+  lcd.clear();
+  lcd.setCursor(6, 0); //setCursur(col,row)
+  lcd.print("ECoM");
+  lcd.setCursor(0, 1); //setCursur(col,row)
+  for(int i=0;i<16;i++){
+    lcd.print("*");
+    delay(200);
+  }
+  
+
+  lcd.clear();
   lcd.setCursor(4, 0); //setCursur(col,row)
   lcd.print("WELCOME");
-  delay(1000);
+  delay(2000);
   
   String tmp = "";
   String inPass = "";
@@ -452,6 +487,8 @@ void install(){
     lcd.setCursor(1, 0); //setCursur(col,row)
     lcd.print("ENTER PASSWORD");
     inStringP = getPasswordFromKeyboard();
+    
+    writeIdOnRom(inString);
     
     if(isValidId(inString,inStringP)){
       writeIdOnRom(inString);
@@ -481,6 +518,9 @@ void install(){
       digitalWrite(8,LOW);
 
       if(readDisconnectInfo()){
+        lcd.clear();
+        lcd.setCursor(2, 0); //setCursur(col,row)
+        lcd.print("Reconnecting");
         //if preveious time disconnected
         inString = getId();
         inStringP = getPassword();
@@ -494,6 +534,10 @@ void install(){
         disconnectData(id_buf , state);
       
         writeDisconnectInfo(0);
+
+        lcd.clear();
+        lcd.setCursor(2, 0); //setCursur(col,row)
+        lcd.print("Connected");
       }
       
   }
@@ -505,9 +549,15 @@ boolean isValidId(String s,String p){ //cheking id is valid -new account in serv
    lcd.setCursor(3, 0); //setCursur(col,row)
    lcd.print("Sending...");
 
-   //getGPSCOR(s,p);  //get gps send data
-   String lat = "7.257296";
-   String lon = "80.602152";
+   //getGPSCOR(s,p);  //get gps send data automatically
+//--------------------------------------------------------------------------
+   //set gps manually
+  lcd.clear();
+  lcd.setCursor(3, 0); //setCursur(col,row)
+  lcd.print("Getting GPS");
+  
+   String lat = "7.2547934000000005";
+   String lon = "80.5916498";
     char * t_lat = (char *)malloc (20 *sizeof(char));
     lat.toCharArray(t_lat,20);
     char * t_lon = (char *)malloc (20 *sizeof(char));
@@ -522,6 +572,7 @@ boolean isValidId(String s,String p){ //cheking id is valid -new account in serv
     Serial.println(pt[i]);i++;
     }
   sendGPS(t_lat,t_lon,st,pt);
+  //--------------------------------------------------------------------------
   
    boolean x = false;
 
@@ -529,6 +580,10 @@ boolean isValidId(String s,String p){ //cheking id is valid -new account in serv
     Serial.println("Data sussesfully uploaded");
     //fun get time & provincial server name
     setServerAndTime(result);
+    
+   ///lcd.clear();
+   //lcd.setCursor(1, 0); //setCursur(col,row)
+   //lcd.print("Data Uploaded");     
     
     x = true;
   }else{
@@ -539,32 +594,7 @@ boolean isValidId(String s,String p){ //cheking id is valid -new account in serv
   }
   
   if(x){
-//   lcd.clear();
-//   lcd.setCursor(3, 0); //setCursur(col,row)
-//   lcd.print("Valid ID");
-//
-//   delay(1000);
-//
-//   lcd.clear();
-//   lcd.setCursor(3, 0); //setCursur(col,row)
-//   lcd.print("Send Coodinate.."); 
-//
-//   //getGPSCOR(s ,p);
-//   String lat = "2";
-//   String lon = "3";
-//    char * t_lat = (char *)malloc (20 *sizeof(char));
-//    lat.toCharArray(t_lat,20);
-//    char * t_lon = (char *)malloc (20 *sizeof(char));
-//    lon.toCharArray(t_lon,20);
-//    char * st = (char *)malloc (20 *sizeof(char));
-//    s.toCharArray(st,20);
-//    char * pt = (char *)malloc (20 *sizeof(char));
-//    p.toCharArray(pt,20);    
-//  sendGPS(t_lat,t_lon,st,pt);
-//   //sending cordinates
-//   //
-//   //
-//   
+  
   }else{
     //not valid id
     return false;
@@ -599,21 +629,21 @@ double getUnit(){
      double unit = power*1000/3600;//miliwatt/h
 
     return unit;
-//
-//    lcd.clear();
-//    
-//    lcd.setCursor(3, 0); //setCursur(col,row)
-//    lcd.print(power);
-//     
-//     Serial.print(AmpsRMS,3);
-//     Serial.println(" Amps RMS");
-      //delay(1000);
+
   }
 
 
 void checkBreakDown(double unit){
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Sending Disonnect");
+  lcd.setCursor(3, 1);
+  lcd.print("Information");
+   
   //Serial.println(inString);
   if(digitalRead(9) == LOW){
+    digitalWrite(9,HIGH);
     //send break down info
     writeDisconnectInfo(1);
 
@@ -627,21 +657,18 @@ void checkBreakDown(double unit){
     inString.toCharArray(id_buf, 12);
     
     disconnectData(id_buf , state);
+  lcd.clear();
+  lcd.setCursor(3, 0);
+  lcd.print("Disconnected");
     while(true);
     //Automatically off the system
   }
 }
 
-void lcdView(byte a){
-  //if(a < 100){
+void lcdView(){
     lcd.clear();
     lcd.setCursor(3, 0); //setCursur(col,row)
     lcd.print(getCurrentDate());
-    //Serial.println(getCurrentDate());
-  //}else{
-    lcd.clear();
-    lcd.setCursor(3, 0); //setCursur(col,row)
-  //}
 }
 
 byte a = 0;
@@ -651,19 +678,15 @@ void setup() {
   pinMode(9,INPUT);
   digitalWrite(8,HIGH);
   // put your setup code here, to run once:
+    lcd.begin(16, 2);
   Serial.begin(9600);
-  while(!Serial);
+  //while(!Serial);
   serialSIM808.begin(9600);
   
   install();
   Serial.println();
   Serial.println(getId());
-  
-//  char id[] = "11";
-//  char pwd[] = "1234";
-//  char next[] = "14";
-//  char pre[] = "45";
-//  sendUnit(id,pwd,next,pre);
+
 }
 
 void loop() {
@@ -681,7 +704,7 @@ void loop() {
     char next[8] = "";
     sprintf(pre, "%0.2f", readLastUnit());
     sprintf(next, "%0.2f", unit);
-    
+    Serial.println("is ok");
     writeLastUnit(unit);
     sendUnit(id_buf,pwd_buf,next,pre);
     unit=0;
@@ -695,5 +718,5 @@ void loop() {
 
     checkBreakDown(unit);
 
-    lcdView(a++);
+    lcdView();
 }

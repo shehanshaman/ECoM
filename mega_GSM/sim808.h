@@ -196,7 +196,7 @@ void sim808_send_byte(uint8_t data)
 boolean gprs_on(){
   //check at command
     if(!sim808_check_with_cmd("AT\r\n","OK\r\n")){   
-      //Serial.println("Error: AT");
+      Serial.println("Error: AT");
     return false;
     }
     delay(200);
